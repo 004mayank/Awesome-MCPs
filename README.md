@@ -18,19 +18,20 @@ Unlike curated lists, this repo focuses on **actual implementations you can run 
 
 ---
 
-## MCPs (one page per MCP)
+## MCPs
 
 Start here:
-
 - [MCP Index](./mcps/README.md)
 
-First set (defined with both user use-cases + developer tool surface):
+### Implemented
+- **Filesystem MCP** → docs: [mcps/filesystem.md](./mcps/filesystem.md) · server: `servers/filesystem-mcp` · write-gated (`confirm:true`)
+- **GitHub MCP** → docs: [mcps/github.md](./mcps/github.md) · server: `servers/github-mcp` · write-gated (`confirm:true`)
+- **Google Drive MCP** → docs: [mcps/google-drive.md](./mcps/google-drive.md) · server: `servers/google-drive-mcp` · write-gated (`confirm:true`)
+- **Gmail MCP** → docs: [mcps/gmail.md](./mcps/gmail.md) · server: `servers/gmail-mcp` · write-gated (`confirm:true`)
+- **Google Calendar MCP** → docs: [mcps/google-calendar.md](./mcps/google-calendar.md) · server: `servers/google-calendar-mcp` · write-gated (`confirm:true`)
 
-1) [Filesystem MCP](./mcps/filesystem.md)
-2) [GitHub MCP](./mcps/github.md)
-3) [Google Drive MCP](./mcps/google-drive.md)
-4) [Gmail MCP](./mcps/gmail.md)
-5) [Google Calendar MCP](./mcps/google-calendar.md)
+### Shared
+- **Google OAuth helper** → `servers/google-auth`
 
 ---
 
