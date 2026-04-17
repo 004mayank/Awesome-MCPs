@@ -18,37 +18,19 @@ Unlike curated lists, this repo focuses on **actual implementations you can run 
 
 ---
 
-## MCP Servers
+## MCPs (one page per MCP)
 
-### 1. Search MCP
+Start here:
 
-* Unified search across web / docs / APIs
-* Returns structured results for agents
-* Supports semantic + keyword search
+- [MCP Index](./mcps/README.md)
 
-### 2. File System MCP
+First set (defined with both user use-cases + developer tool surface):
 
-* Read/write/manage local files
-* Secure sandboxed access
-* Supports multiple formats (txt, json, csv)
-
-### 3. Browser MCP
-
-* Headless browsing for agents
-* Scraping + interaction
-* Useful for automation tasks
-
-### 4. Code Execution MCP
-
-* Run code safely (Python/JS)
-* Return outputs to agent
-* Great for data + reasoning tasks
-
-### 5. Database MCP
-
-* Query SQL/NoSQL databases
-* Structured responses
-* Supports analytics use cases
+1) [Filesystem MCP](./mcps/filesystem.md)
+2) [GitHub MCP](./mcps/github.md)
+3) [Google Drive MCP](./mcps/google-drive.md)
+4) [Gmail MCP](./mcps/gmail.md)
+5) [Google Calendar MCP](./mcps/google-calendar.md)
 
 ---
 
