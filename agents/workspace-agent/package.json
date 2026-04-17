@@ -1,0 +1,14 @@
+{
+  "name": "@awesome-mcps/workspace-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Workspace agent orchestrating Search MCP + other MCPs (OpenAI or Anthropic).",
+  "main": "src/cli.js",
+  "scripts": {
+    "start": "node src/cli.js --help"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
