@@ -37,6 +37,7 @@ Start here:
 ### How to use
 - Claude Desktop config example: [docs/claude-desktop.md](./docs/claude-desktop.md)
 - Servers runbook: [servers/README.md](./servers/README.md)
+- Agents index: [agents/README.md](./agents/README.md)
 
 ---
 
