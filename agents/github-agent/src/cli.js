@@ -33,6 +33,12 @@ Usage:
   node src/cli.js issues --owner <o> --repo <r>
   node src/cli.js analyze-pr --owner <o> --repo <r> --number <n>
   node src/cli.js search --q "..." [--limit 10]
+  node src/cli.js file --owner <o> --repo <r> --path <filePath> [--ref <branch|sha>]
+
+Actions / CI:
+  node src/cli.js workflow-runs --owner <o> --repo <r> [--branch main]
+  node src/cli.js workflow-run --owner <o> --repo <r> --runId <id>
+  node src/cli.js workflow-logs --owner <o> --repo <r> --runId <id>
 
 Write (requires --confirm):
   node src/cli.js create-issue --owner <o> --repo <r> --title "..." [--body "..."] [--labels "a,b"] [--confirm]
@@ -42,6 +48,7 @@ Write (requires --confirm):
   node src/cli.js close --owner <o> --repo <r> --number <issue> [--confirm]
   node src/cli.js reopen --owner <o> --repo <r> --number <issue> [--confirm]
   node src/cli.js merge --owner <o> --repo <r> --number <pr> [--method merge|squash|rebase] [--confirm]
+  node src/cli.js workflow-dispatch --owner <o> --repo <r> --workflow <fileOrId> --ref <branch|tag|sha> [--inputs '{"k":"v"}'] [--confirm]
 
 Env:
   GITHUB_TOKEN (required)
@@ -103,6 +110,35 @@ async function main() {
     });
 
     console.log(report);
+    return;
+  }
+
+  if (cmd === 'file') {
+    const file_path = args.path;
+    const ref = args.ref;
+    const data = await callTool(client, 'gh_get_file', { owner, repo, file_path, ref });
+    console.log(JSON.stringify(data, null, 2));
+    return;
+  }
+
+  if (cmd === 'workflow-runs') {
+    const branch = args.branch;
+    const data = await callTool(client, 'gh_list_workflow_runs', { owner, repo, branch, per_page: 20 });
+    console.log(JSON.stringify(data, null, 2));
+    return;
+  }
+
+  if (cmd === 'workflow-run') {
+    const run_id = Number(args.runId);
+    const data = await callTool(client, 'gh_get_workflow_run', { owner, repo, run_id });
+    console.log(JSON.stringify(data, null, 2));
+    return;
+  }
+
+  if (cmd === 'workflow-logs') {
+    const run_id = Number(args.runId);
+    const data = await callTool(client, 'gh_get_workflow_run_logs_url', { owner, repo, run_id });
+    console.log(JSON.stringify(data, null, 2));
     return;
   }
 
@@ -208,6 +244,25 @@ async function main() {
       return;
     }
     const res = await callTool(client, 'gh_merge_pr', { owner, repo, number, merge_method, confirm: true });
+    console.log(JSON.stringify(res, null, 2));
+    return;
+  }
+
+  if (cmd === 'workflow-dispatch') {
+    const workflow_id = args.workflow;
+    const ref = args.ref;
+    let inputs = undefined;
+    if (args.inputs) {
+      try { inputs = JSON.parse(args.inputs); } catch { throw new Error('inputs must be valid JSON'); }
+    }
+
+    if (!confirm) {
+      console.log('Dry-run: re-run with --confirm to dispatch workflow.');
+      console.log(JSON.stringify({ owner, repo, workflow_id, ref, inputs }, null, 2));
+      return;
+    }
+
+    const res = await callTool(client, 'gh_trigger_workflow_dispatch', { owner, repo, workflow_id, ref, inputs, confirm: true });
     console.log(JSON.stringify(res, null, 2));
     return;
   }
