@@ -10,7 +10,7 @@ if (!GITHUB_TOKEN) {
 
 const BASE = 'https://api.github.com';
 
-async function ghFetch(path, { method = 'GET', headers = {}, query } = {}) {
+async function ghFetch(path, { method = 'GET', headers = {}, query, body } = {}) {
   const url = new URL(BASE + path);
   if (query) {
     for (const [k, v] of Object.entries(query)) {
@@ -27,6 +27,7 @@ async function ghFetch(path, { method = 'GET', headers = {}, query } = {}) {
       'X-GitHub-Api-Version': '2022-11-28',
       ...headers,
     },
+    body,
   });
 
   const remaining = res.headers.get('x-ratelimit-remaining');
@@ -47,6 +48,10 @@ async function ghJson(path, opts) {
   return { data, remaining, reset };
 }
 
+function jsonBody(obj) {
+  return JSON.stringify(obj ?? {});
+}
+
 async function ghText(path, opts) {
   const { res, remaining, reset } = await ghFetch(path, opts);
   const text = await res.text();
@@ -57,6 +62,12 @@ function clampPerPage(n) {
   const x = Number(n || 30);
   if (Number.isNaN(x)) return 30;
   return Math.max(1, Math.min(100, x));
+}
+
+function ensureConfirm(confirm) {
+  if (confirm !== true) {
+    throw new Error('Write operation requires confirm=true');
+  }
 }
 
 const server = new McpServer({
@@ -71,7 +82,7 @@ server.tool(
     repo: { type: 'string' },
     state: { type: 'string', description: 'open|closed|all', optional: true },
     labels: { type: 'string', description: 'Comma-separated label names', optional: true },
-    per_page: { type: 'number', optional: true },
+    per_page: { type: 'number', optional: true }
   },
   async ({ owner, repo, state, labels, per_page }) => {
     const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues`, {
@@ -101,7 +112,7 @@ server.tool(
     state: { type: 'string', description: 'open|closed|all', optional: true },
     base: { type: 'string', optional: true },
     head: { type: 'string', optional: true },
-    per_page: { type: 'number', optional: true },
+    per_page: { type: 'number', optional: true }
   },
   async ({ owner, repo, state, base, head, per_page }) => {
     const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/pulls`, {
@@ -166,7 +177,7 @@ server.tool(
     repo: { type: 'string' },
     branch: { type: 'string', optional: true },
     status: { type: 'string', optional: true },
-    per_page: { type: 'number', optional: true },
+    per_page: { type: 'number', optional: true }
   },
   async ({ owner, repo, branch, status, per_page }) => {
     const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/actions/runs`, {
@@ -179,6 +190,46 @@ server.tool(
     return {
       content: [
         { type: 'text', text: JSON.stringify({ runs: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+// ----------------------
+// Write tools (gated)
+// ----------------------
+
+server.tool(
+  'gh_create_issue',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    title: { type: 'string' },
+    body: { type: 'string', optional: true },
+    labels: { type: 'array', items: { type: 'string' }, optional: true },
+    confirm: { type: 'boolean', optional: true, description: 'Must be true to execute.' }
+  },
+  async ({ owner, repo, title, body, labels, confirm }) => {
+    ensureConfirm(confirm);
+
+    const payload = {
+      title,
+      body: body || undefined,
+      labels: (Array.isArray(labels) && labels.length) ? labels : undefined,
+    };
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody(payload),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ issue: data, rateLimit: { remaining, reset } }, null, 2) },
       ],
     };
   }
