@@ -22,6 +22,7 @@ function parseRoots() {
 
 const ROOTS = parseRoots();
 const MAX_BYTES = Number(process.env.FS_MAX_BYTES || '200000');
+const MAX_WRITE_BYTES = Number(process.env.FS_MAX_WRITE_BYTES || '200000');
 const MAX_RESULTS = Number(process.env.FS_MAX_RESULTS || '50');
 
 function isWithinRoots(p) {
@@ -35,6 +36,12 @@ function isWithinRoots(p) {
 function assertAllowed(p) {
   if (!isWithinRoots(p)) {
     throw new Error(`Path is outside allowed roots: ${p}`);
+  }
+}
+
+function ensureConfirm(confirm) {
+  if (confirm !== true) {
+    throw new Error('Write operation requires confirm=true');
   }
 }
 
@@ -68,6 +75,46 @@ async function readFileText(filePath) {
   const buf = await fs.readFile(filePath);
   // Best-effort UTF-8
   return buf.toString('utf8');
+}
+
+async function writeFileText(filePath, content) {
+  assertAllowed(filePath);
+  const bytes = Buffer.byteLength(content, 'utf8');
+  if (bytes > MAX_WRITE_BYTES) {
+    throw new Error(`Content too large (${bytes} bytes). Max is ${MAX_WRITE_BYTES}.`);
+  }
+  await fs.writeFile(filePath, content, 'utf8');
+  return statSafe(filePath);
+}
+
+async function mkdirp(dirPath) {
+  assertAllowed(dirPath);
+  await fs.mkdir(dirPath, { recursive: true });
+  return statSafe(dirPath);
+}
+
+async function deleteFile(filePath) {
+  const info = await statSafe(filePath);
+  if (info.type !== 'file') {
+    throw new Error('fs_delete only supports deleting files (not directories) in v0');
+  }
+  await fs.unlink(filePath);
+  return { ok: true };
+}
+
+async function movePath(from, to) {
+  assertAllowed(from);
+  assertAllowed(to);
+  await fs.rename(from, to);
+  return { ok: true };
+}
+
+async function copyFile(from, to) {
+  const info = await statSafe(from);
+  if (info.type !== 'file') throw new Error('fs_copy only supports files in v0');
+  assertAllowed(to);
+  await fs.copyFile(from, to);
+  return statSafe(to);
 }
 
 async function walk(dir, out) {
@@ -158,13 +205,105 @@ server.tool(
   'fs_search',
   {
     root: { type: 'string', description: 'Root directory to search (must be within FS_ROOTS allowlist).' },
-    query: { type: 'string', description: 'Case-insensitive substring to search for.' },
+    query: { type: 'string', description: 'Case-insensitive substring to search for.' }
   },
   async ({ root, query }) => {
     const matches = await search(root, query);
     return {
       content: [
         { type: 'text', text: JSON.stringify({ root, query, matches }, null, 2) },
+      ],
+    };
+  }
+);
+
+// ----------------------
+// Write tools (gated)
+// ----------------------
+
+server.tool(
+  'fs_write',
+  {
+    path: { type: 'string', description: 'File path (must be within FS_ROOTS allowlist).' },
+    content: { type: 'string' },
+    confirm: { type: 'boolean', optional: true, description: 'Must be true to execute.' }
+  },
+  async ({ path: p, content, confirm }) => {
+    ensureConfirm(confirm);
+    const info = await writeFileText(p, content);
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ ok: true, info }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'fs_mkdir',
+  {
+    path: { type: 'string', description: 'Directory path (must be within FS_ROOTS allowlist).' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ path: p, confirm }) => {
+    ensureConfirm(confirm);
+    const info = await mkdirp(p);
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ ok: true, info }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'fs_delete',
+  {
+    path: { type: 'string', description: 'File path to delete (files only in v0).' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ path: p, confirm }) => {
+    ensureConfirm(confirm);
+    const res = await deleteFile(p);
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify(res, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'fs_move',
+  {
+    from: { type: 'string' },
+    to: { type: 'string' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ from, to, confirm }) => {
+    ensureConfirm(confirm);
+    const res = await movePath(from, to);
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify(res, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'fs_copy',
+  {
+    from: { type: 'string' },
+    to: { type: 'string' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ from, to, confirm }) => {
+    ensureConfirm(confirm);
+    const info = await copyFile(from, to);
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ ok: true, info }, null, 2) },
       ],
     };
   }
