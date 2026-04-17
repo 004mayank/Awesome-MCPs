@@ -1,0 +1,16 @@
+{
+  "name": "@awesome-mcps/google-calendar-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Google Calendar MCP server using Google OAuth (read + gated write).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@awesome-mcps/google-auth": "file:../google-auth"
+  }
+}
