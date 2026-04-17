@@ -20,7 +20,9 @@ export function googleConfig() {
   const clientId = env('GOOGLE_CLIENT_ID');
   const clientSecret = env('GOOGLE_CLIENT_SECRET');
   const redirectUri = env('GOOGLE_REDIRECT_URI', 'http://localhost:8787/oauth/callback');
-  const tokenPath = env('GOOGLE_TOKEN_PATH', path.resolve(process.cwd(), '.secrets/google-token.json'));
+  // Default: share a single token cache across all Google MCP servers.
+  // If a server wants its own file, set GOOGLE_TOKEN_PATH explicitly.
+  const tokenPath = env('GOOGLE_TOKEN_PATH', path.resolve(process.cwd(), '..', '..', '.secrets/google-token.json'));
 
   if (!clientId) throw new Error('GOOGLE_CLIENT_ID is required');
   if (!clientSecret) throw new Error('GOOGLE_CLIENT_SECRET is required');

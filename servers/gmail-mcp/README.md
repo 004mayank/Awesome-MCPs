@@ -7,7 +7,7 @@ Env vars:
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
 - `GOOGLE_REDIRECT_URI` (default: `http://localhost:8787/oauth/callback`)
-- `GOOGLE_TOKEN_PATH` (default: `servers/gmail-mcp/.secrets/google-token.json`)
+- `GOOGLE_TOKEN_PATH` (default: `Awesome-MCPs/.secrets/google-token.json`)
 
 Scopes used:
 - Read: `https://www.googleapis.com/auth/gmail.readonly`

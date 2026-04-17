@@ -33,6 +33,10 @@ Start here:
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`
 
+### How to use
+- Claude Desktop config example: [docs/claude-desktop.md](./docs/claude-desktop.md)
+- Servers runbook: [servers/README.md](./servers/README.md)
+
 ---
 
 ## Quick Start

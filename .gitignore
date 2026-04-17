@@ -1,2 +1,5 @@
 servers/**/node_modules
 servers/**/package-lock.json
+
+# local secrets
+.secrets/
