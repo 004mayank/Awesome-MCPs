@@ -1,0 +1,9 @@
+{
+  "name": "@awesome-mcps/google-auth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared Google OAuth helper for Awesome-MCPs servers.",
+  "main": "src/google-auth.js",
+  "dependencies": {}
+}
