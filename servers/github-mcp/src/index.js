@@ -235,5 +235,215 @@ server.tool(
   }
 );
 
+server.tool(
+  'gh_create_comment',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    issue_number: { type: 'number', description: 'Issue number (PRs are issues too).' },
+    body: { type: 'string' },
+    confirm: { type: 'boolean', optional: true, description: 'Must be true to execute.' }
+  },
+  async ({ owner, repo, issue_number, body, confirm }) => {
+    ensureConfirm(confirm);
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues/${issue_number}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody({ body }),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ comment: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_add_labels',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    issue_number: { type: 'number' },
+    labels: { type: 'array', items: { type: 'string' } },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, issue_number, labels, confirm }) => {
+    ensureConfirm(confirm);
+    if (!Array.isArray(labels) || labels.length === 0) throw new Error('labels must be a non-empty array');
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues/${issue_number}/labels`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody({ labels }),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ labels: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_remove_label',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    issue_number: { type: 'number' },
+    name: { type: 'string', description: 'Label name to remove (URL-encoded automatically).' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, issue_number, name, confirm }) => {
+    ensureConfirm(confirm);
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues/${issue_number}/labels/${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/vnd.github+json',
+      },
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ labels: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_close_issue',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    issue_number: { type: 'number' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, issue_number, confirm }) => {
+    ensureConfirm(confirm);
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues/${issue_number}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody({ state: 'closed' }),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ issue: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_reopen_issue',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    issue_number: { type: 'number' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, issue_number, confirm }) => {
+    ensureConfirm(confirm);
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/issues/${issue_number}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody({ state: 'open' }),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ issue: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_merge_pr',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    number: { type: 'number', description: 'PR number' },
+    merge_method: { type: 'string', optional: true, description: 'merge|squash|rebase' },
+    commit_title: { type: 'string', optional: true },
+    commit_message: { type: 'string', optional: true },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, number, merge_method, commit_title, commit_message, confirm }) => {
+    ensureConfirm(confirm);
+
+    const payload = {
+      merge_method: merge_method || undefined,
+      commit_title: commit_title || undefined,
+      commit_message: commit_message || undefined,
+    };
+
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/pulls/${number}/merge`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody(payload),
+    });
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ merge: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_trigger_workflow_dispatch',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    workflow_id: { type: 'string', description: 'Workflow file name or ID (e.g., build.yml)' },
+    ref: { type: 'string', description: 'Git ref (branch/tag/SHA)' },
+    inputs: { type: 'object', optional: true, description: 'Workflow inputs object' },
+    confirm: { type: 'boolean', optional: true }
+  },
+  async ({ owner, repo, workflow_id, ref, inputs, confirm }) => {
+    ensureConfirm(confirm);
+
+    const { res, remaining, reset } = await ghFetch(`/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+      },
+      body: jsonBody({ ref, inputs: inputs || undefined }),
+    });
+
+    // dispatch returns 204 No Content
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ ok: true, status: res.status, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
