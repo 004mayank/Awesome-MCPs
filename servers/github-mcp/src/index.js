@@ -195,6 +195,94 @@ server.tool(
   }
 );
 
+server.tool(
+  'gh_get_workflow_run',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    run_id: { type: 'number' }
+  },
+  async ({ owner, repo, run_id }) => {
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/actions/runs/${run_id}`, {});
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ run: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_get_workflow_run_logs_url',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    run_id: { type: 'number' }
+  },
+  async ({ owner, repo, run_id }) => {
+    const { res, remaining, reset } = await ghFetch(`/repos/${owner}/${repo}/actions/runs/${run_id}/logs`, {
+      headers: { Accept: 'application/vnd.github+json' },
+    });
+    // GitHub responds with a 302 to an archive URL.
+    const loc = res.headers.get('location');
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ logsUrl: loc, note: 'Download the zip from logsUrl', rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_search_issues_prs',
+  {
+    q: { type: 'string', description: 'GitHub search query (search/issues endpoint syntax).' },
+    per_page: { type: 'number', optional: true }
+  },
+  async ({ q, per_page }) => {
+    const { data, remaining, reset } = await ghJson('/search/issues', {
+      query: {
+        q,
+        per_page: clampPerPage(per_page),
+      },
+    });
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ results: data, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
+server.tool(
+  'gh_get_file',
+  {
+    owner: { type: 'string' },
+    repo: { type: 'string' },
+    file_path: { type: 'string', description: 'Path in repo, e.g. README.md' },
+    ref: { type: 'string', optional: true, description: 'Branch/tag/SHA' }
+  },
+  async ({ owner, repo, file_path, ref }) => {
+    const { data, remaining, reset } = await ghJson(`/repos/${owner}/${repo}/contents/${file_path.split('/').map(encodeURIComponent).join('/')}`, {
+      query: {
+        ref,
+      },
+    });
+
+    // content is base64 for files. For large files GitHub may return null.
+    let decoded = null;
+    if (data && data.type === 'file' && typeof data.content === 'string') {
+      decoded = Buffer.from(data.content.replace(/\n/g, ''), 'base64').toString('utf8');
+    }
+
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify({ file: { ...data, decoded }, rateLimit: { remaining, reset } }, null, 2) },
+      ],
+    };
+  }
+);
+
 // ----------------------
 // Write tools (gated)
 // ----------------------

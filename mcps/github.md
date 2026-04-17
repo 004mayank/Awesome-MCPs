@@ -24,6 +24,17 @@ Read:
 - `gh_get_pr_diff({ owner, repo, number })`
 - `gh_list_workflow_runs({ owner, repo, branch?, status?, per_page? })`
 
+Read:
+- `gh_list_issues({ owner, repo, state?, labels?, per_page? })`
+- `gh_list_prs({ owner, repo, state?, base?, head?, per_page? })`
+- `gh_get_pr({ owner, repo, number })`
+- `gh_get_pr_diff({ owner, repo, number })`
+- `gh_list_workflow_runs({ owner, repo, branch?, status?, per_page? })`
+- `gh_get_workflow_run({ owner, repo, run_id })`
+- `gh_get_workflow_run_logs_url({ owner, repo, run_id })`
+- `gh_search_issues_prs({ q, per_page? })`
+- `gh_get_file({ owner, repo, file_path, ref? })`
+
 Write (requires `confirm:true`):
 - `gh_create_issue({ owner, repo, title, body?, labels?, confirm? })`
 - `gh_create_comment({ owner, repo, issue_number, body, confirm? })`
