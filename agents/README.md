@@ -6,6 +6,7 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [GitHub Agent](./github-agent/README.md)
 - [Drive Agent](./drive-agent/README.md)
 - [Gmail Agent](./gmail-agent/README.md)
+- [Calendar Agent](./calendar-agent/README.md)
 
 ## Planned
 - Drive Agent
