@@ -1,32 +1,40 @@
 # Google Calendar MCP
 
+Server implementation: `servers/google-calendar-mcp`
+
 ## What users can do (use-cases)
-- Check availability (“when am I free for 45 minutes next week?”).
-- Summarize upcoming schedule and highlight conflicts.
-- Create meetings/events with title, attendees, location, and agenda.
-- Update or cancel events (optional, gated).
+Read:
+- List calendars.
+- List events in a time window.
+- Compute free/busy windows.
+
+Write (with explicit confirmation):
+- Create, update, delete events.
 
 ## Tools (developer view)
-Common tool surface:
-- `calendar.freebusy({ start, end, calendars? }) -> { busy[] }`
-- `calendar.list_events({ calendarId, start, end, query? }) -> { events[] }`
-- `calendar.create_event({ calendarId, title, start, end, attendees?, location?, description? }) -> { event }` *(write-gated)*
-- `calendar.update_event({ calendarId, eventId, patch }) -> { event }` *(write-gated)*
-- `calendar.delete_event({ calendarId, eventId }) -> { ok }` *(write-gated)*
+Read:
+- `cal_list_calendars({})`
+- `cal_list_events({ calendarId, timeMin, timeMax, q?, pageToken?, maxResults? })`
+- `cal_freebusy({ timeMin, timeMax, calendarIds })`
+
+Write (requires `confirm:true`):
+- `cal_create_event({ calendarId, summary, start, end, description?, location?, attendees?, confirm? })`
+- `cal_update_event({ calendarId, eventId, patch, confirm? })`
+- `cal_delete_event({ calendarId, eventId, confirm? })`
 
 ## Auth / setup
-- **OAuth** (Google).
-- Recommended scopes:
-  - read-only: `calendar.readonly`
-  - write: `calendar.events`
+- **OAuth** (Google) via localhost redirect (see server README).
+- Scopes:
+  - read: `calendar.readonly`
+  - write (gated): `calendar.events`
 
 ## Safety / risk
-- **Risk:** medium if writes enabled.
+- **Risk:** medium.
 - Guardrails:
-  - default to read-only
-  - explicit confirmation before creating/updating/deleting events
+  - all writes require `confirm:true`
   - avoid spamming attendees
 
 ## Example prompts
-- “Find three 30-min slots I’m free this week (work hours only).”
-- “Create an event titled ‘Design review’ next Tue 3pm IST (ask before creating).”
+- “Show my next 10 events on primary.”
+- “Find free 45-min slots next week between 10:00–18:00.”
+- “Create an event ‘Design review’ next Tue 3pm IST (confirm).”
