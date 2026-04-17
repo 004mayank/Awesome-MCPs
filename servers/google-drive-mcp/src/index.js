@@ -141,7 +141,7 @@ server.tool(
   async ({ fileId }) => {
     const { accessToken } = await ensureAccessToken({ scopes: SCOPES_READ });
 
-    // Export Google Docs to plain text. (For other types, callers should use metadata + decide.)
+    // Export Google Docs to plain text.
     const u = new URL(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}/export`);
     u.searchParams.set('mimeType', 'text/plain');
 
@@ -149,7 +149,64 @@ server.tool(
     const text = await res.text();
 
     return {
-      content: [{ type: 'text', text: JSON.stringify({ fileId, text }, null, 2) }],
+      content: [{ type: 'text', text: JSON.stringify({ fileId, mimeType: 'text/plain', text }, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  'drive_export_html',
+  {
+    fileId: { type: 'string' },
+  },
+  async ({ fileId }) => {
+    const { accessToken } = await ensureAccessToken({ scopes: SCOPES_READ });
+    const u = new URL(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}/export`);
+    u.searchParams.set('mimeType', 'text/html');
+    const res = await gfetch(u.toString(), accessToken);
+    const html = await res.text();
+    return {
+      content: [{ type: 'text', text: JSON.stringify({ fileId, mimeType: 'text/html', html }, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  'drive_export_markdown',
+  {
+    fileId: { type: 'string' },
+  },
+  async ({ fileId }) => {
+    const { accessToken } = await ensureAccessToken({ scopes: SCOPES_READ });
+    // Google Drive export supports text/html, text/plain, application/pdf, etc.
+    // Markdown isn't a first-class export for Google Docs, but some docs support it.
+    // We attempt text/markdown and return the result (or API error).
+    const u = new URL(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}/export`);
+    u.searchParams.set('mimeType', 'text/markdown');
+    const res = await gfetch(u.toString(), accessToken);
+    const md = await res.text();
+    return {
+      content: [{ type: 'text', text: JSON.stringify({ fileId, mimeType: 'text/markdown', markdown: md }, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  'drive_download_base64',
+  {
+    fileId: { type: 'string' },
+  },
+  async ({ fileId }) => {
+    const { accessToken } = await ensureAccessToken({ scopes: SCOPES_READ });
+    const u = new URL(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}`);
+    u.searchParams.set('alt', 'media');
+
+    const res = await gfetch(u.toString(), accessToken);
+    const buf = Buffer.from(await res.arrayBuffer());
+    const base64 = buf.toString('base64');
+
+    return {
+      content: [{ type: 'text', text: JSON.stringify({ fileId, base64 }, null, 2) }],
     };
   }
 );

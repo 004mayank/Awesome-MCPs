@@ -22,6 +22,9 @@ Read:
 - `drive_get_metadata({ fileId })`
 - `drive_list_folder({ folderId, pageSize?, pageToken? })`
 - `drive_export_text({ fileId })`
+- `drive_export_html({ fileId })`
+- `drive_export_markdown({ fileId })`
+- `drive_download_base64({ fileId })`
 
 Write (requires `confirm:true`):
 - `drive_create_folder({ name, parentId?, confirm? })`
