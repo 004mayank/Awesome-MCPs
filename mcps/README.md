@@ -3,6 +3,7 @@
 One page per MCP entry.
 
 ## Implemented (in this repo)
+- [Search MCP](./search.md) (server: `servers/search-mcp`)
 - [Filesystem MCP](./filesystem.md) (server: `servers/filesystem-mcp`)
 - [GitHub MCP](./github.md) (server: `servers/github-mcp`)
 - [Google Drive MCP](./google-drive.md) (server: `servers/google-drive-mcp`)

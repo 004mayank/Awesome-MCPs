@@ -12,6 +12,21 @@ cp .env.example .env
 > Note: `.env` is not automatically loaded by these servers yet.
 > Export env vars in your shell or use a launcher that loads `.env`.
 
+## Search MCP
+Path: `servers/search-mcp`
+
+```bash
+cd servers/search-mcp
+npm i
+export FS_ROOTS="/absolute/path/one,/absolute/path/two"
+export GITHUB_TOKEN="..."
+export GOOGLE_CLIENT_ID="..."
+export GOOGLE_CLIENT_SECRET="..."
+export GOOGLE_REDIRECT_URI="http://localhost:8787/oauth/callback"
+
+npm start
+```
+
 ## Filesystem MCP
 Path: `servers/filesystem-mcp`
 

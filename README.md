@@ -24,6 +24,7 @@ Start here:
 - [MCP Index](./mcps/README.md)
 
 ### Implemented
+- **Search MCP** → docs: [mcps/search.md](./mcps/search.md) · server: `servers/search-mcp` · read-only
 - **Filesystem MCP** → docs: [mcps/filesystem.md](./mcps/filesystem.md) · server: `servers/filesystem-mcp` · write-gated (`confirm:true`)
 - **GitHub MCP** → docs: [mcps/github.md](./mcps/github.md) · server: `servers/github-mcp` · write-gated (`confirm:true`)
 - **Google Drive MCP** → docs: [mcps/google-drive.md](./mcps/google-drive.md) · server: `servers/google-drive-mcp` · write-gated (`confirm:true`)

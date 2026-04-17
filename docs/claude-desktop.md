@@ -12,6 +12,17 @@ Update `command` and `args` to match your local paths.
 ```json
 {
   "mcpServers": {
+    "search": {
+      "command": "node",
+      "args": ["/absolute/path/to/Awesome-MCPs/servers/search-mcp/src/index.js"],
+      "env": {
+        "FS_ROOTS": "/absolute/path/to/allowed/root1,/absolute/path/to/allowed/root2",
+        "GITHUB_TOKEN": "YOUR_TOKEN",
+        "GOOGLE_CLIENT_ID": "...",
+        "GOOGLE_CLIENT_SECRET": "...",
+        "GOOGLE_REDIRECT_URI": "http://localhost:8787/oauth/callback"
+      }
+    },
     "filesystem": {
       "command": "node",
       "args": ["/absolute/path/to/Awesome-MCPs/servers/filesystem-mcp/src/index.js"],
