@@ -1,32 +1,50 @@
 # Google Drive MCP
 
+Server implementation: `servers/google-drive-mcp`
+
 ## What users can do (use-cases)
+Read:
 - Search Drive for docs (“find the Q2 roadmap deck”).
-- Retrieve files and extract text.
-- Export Google Docs/Slides/Sheets into text/markdown for summarization or RAG.
+- Retrieve file metadata.
 - List files in a folder / shared drive.
-- (Optional) Create a doc from a template with explicit confirmation.
+- Export Google Docs to plain text for summarization or RAG.
+
+Write (with explicit confirmation):
+- Create folders.
+- Upload a text file.
+- Copy files.
+- Move files between folders.
+- Delete files.
 
 ## Tools (developer view)
-Common tool surface:
-- `drive.search({ query, pageSize?, pageToken? }) -> { files[], nextPageToken? }`
-- `drive.get_metadata({ fileId }) -> { file }`
-- `drive.download({ fileId }) -> { bytes | path }` *(for binary)*
-- `drive.export({ fileId, format: 'text'|'markdown'|'pdf'|'html' }) -> { content | path }`
-- `drive.list_folder({ folderId, pageSize?, pageToken? }) -> { files[], nextPageToken? }`
+Read:
+- `drive_search({ q, pageSize?, pageToken? })`
+- `drive_get_metadata({ fileId })`
+- `drive_list_folder({ folderId, pageSize?, pageToken? })`
+- `drive_export_text({ fileId })`
+
+Write (requires `confirm:true`):
+- `drive_create_folder({ name, parentId?, confirm? })`
+- `drive_upload_text({ name, content, parentId?, mimeType?, confirm? })`
+- `drive_copy_file({ fileId, newName?, parentId?, confirm? })`
+- `drive_move_file({ fileId, addParents?, removeParents?, confirm? })`
+- `drive_delete_file({ fileId, confirm? })`
 
 ## Auth / setup
-- **OAuth** (Google) with restricted scopes.
+- **OAuth** (Google).
+- Uses a localhost redirect flow (see server README).
 - Recommended scopes (least privilege):
-  - `drive.readonly` / `drive.metadata.readonly`
+  - Read: `drive.readonly`, `drive.metadata.readonly`
+  - Write (gated): `drive.file`
 
 ## Safety / risk
-- **Risk:** low (read-only).
+- **Risk:** medium once writes are enabled.
 - Guardrails:
-  - never request broad scopes unless needed
-  - handle rate limits & pagination
-  - avoid downloading huge binaries unless asked
+  - write operations require `confirm:true`
+  - keep scopes minimal
+  - handle pagination/rate limits
 
 ## Example prompts
 - “Search my Drive for ‘pricing PRD’ and summarize the most recent doc.”
-- “Export this Google Doc to markdown and extract key decisions.”
+- “Create a folder called ‘Agent Notes’ in my Drive (confirm).”
+- “Upload this text as a file called `notes.txt` into folder X (confirm).”

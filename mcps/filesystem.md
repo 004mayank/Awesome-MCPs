@@ -1,34 +1,48 @@
 # Filesystem MCP
 
+Server implementation: `servers/filesystem-mcp`
+
 ## What users can do (use-cases)
-- Search for files by keyword (e.g., “find the latest PRD PDF”) within approved folders.
-- Read files (markdown, text, JSON) so an agent can summarize or extract data.
+Read:
+- Search for files by keyword within approved folders.
+- Read files (markdown/text/JSON) so an agent can summarize or extract data.
 - List directories to understand what’s available.
-- (Optional) Create/update files (e.g., “write a draft doc”) with explicit confirmation.
-- Extract snippets/lines around matches (useful for large logs).
+- Extract small snippets around a match (useful for logs).
+
+Write (with explicit confirmation):
+- Create/update a text file.
+- Create directories.
+- Move/rename files.
+- Copy files.
+- Delete files (files only in v0).
 
 ## Tools (developer view)
-Typical tool surface (names can vary by implementation):
-- `fs.list({ path }) -> { entries[] }`
-- `fs.search({ root, query, glob?, maxResults? }) -> { matches[] }`
-- `fs.read({ path, from?, bytes?, lines? }) -> { content, truncated? }`
-- `fs.stat({ path }) -> { sizeBytes, modifiedAt, type }`
-- `fs.write({ path, content, mode? }) -> { ok }` *(write-gated)*
-- `fs.mkdir({ path }) -> { ok }` *(write-gated)*
+Read:
+- `fs_list({ path })` — list directory entries (allowlisted roots only)
+- `fs_read({ path })` — read text file (size-limited)
+- `fs_search({ root, query })` — case-insensitive substring search
+
+Write (requires `confirm:true`):
+- `fs_write({ path, content, confirm? })`
+- `fs_mkdir({ path, confirm? })`
+- `fs_move({ from, to, confirm? })`
+- `fs_copy({ from, to, confirm? })`
+- `fs_delete({ path, confirm? })` *(files only)*
 
 ## Auth / setup
 - Usually **none** (local capability).
-- Requires **sandboxing** via an allowlist of directories.
+- Requires sandboxing via `FS_ROOTS` (comma-separated absolute paths).
 
 ## Safety / risk
-- **Risk:** medium if writes are enabled.
-- Must enforce:
-  - allowlisted roots
-  - no path traversal (`..`)
-  - max file size / streaming reads
-  - separate confirmation gate for writes/deletes
+- **Risk:** medium (because local files).
+- Enforces:
+  - allowlisted roots only
+  - blocks path traversal/out-of-root access
+  - max read size (`FS_MAX_BYTES`) and max write size (`FS_MAX_WRITE_BYTES`)
+  - write operations require `confirm:true`
 
 ## Example prompts
 - “Search my docs folder for ‘pricing experiment’ and show top 10 matches.”
 - “Open `/docs/spec.md` and summarize key decisions.”
-- “Create a new file `notes/meeting.md` with these bullets (ask before writing).”
+- “Write a file `notes/meeting.md` with these bullets (confirm before writing).”
+- “Move `draft.md` to `archive/draft.md` (confirm).”

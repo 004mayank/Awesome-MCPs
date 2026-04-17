@@ -12,8 +12,11 @@ Env vars:
 - `GOOGLE_TOKEN_PATH` (default: `servers/google-drive-mcp/.secrets/google-token.json`)
 
 Scopes used:
-- `https://www.googleapis.com/auth/drive.readonly`
-- `https://www.googleapis.com/auth/drive.metadata.readonly`
+- Read:
+  - `https://www.googleapis.com/auth/drive.readonly`
+  - `https://www.googleapis.com/auth/drive.metadata.readonly`
+- Write (gated with `confirm=true`):
+  - `https://www.googleapis.com/auth/drive.file`
 
 ## Run
 
@@ -31,7 +34,15 @@ npm start
 On first run, the server prints an authorization URL. Open it in a browser, approve, and the server will cache tokens locally.
 
 ## Tools (v0)
+Read:
 - `drive_search({ q, pageSize?, pageToken? })`
 - `drive_get_metadata({ fileId })`
 - `drive_list_folder({ folderId, pageSize?, pageToken? })`
 - `drive_export_text({ fileId })`
+
+Write (requires `confirm:true`):
+- `drive_create_folder({ name, parentId?, confirm? })`
+- `drive_upload_text({ name, content, parentId?, mimeType?, confirm? })`
+- `drive_copy_file({ fileId, newName?, parentId?, confirm? })`
+- `drive_move_file({ fileId, addParents?, removeParents?, confirm? })`
+- `drive_delete_file({ fileId, confirm? })`
