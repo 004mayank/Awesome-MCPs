@@ -20,7 +20,9 @@ async function main() {
         const taskPath = getArg('--task');
         if (!taskPath)
             throw new Error('Missing --task');
-        await runTaskFromFile(taskPath);
+        const runId = process.env.BAF_RUN_ID;
+        const artifactsDir = process.env.BAF_ARTIFACTS_DIR;
+        await runTaskFromFile(taskPath, { runId: runId || undefined, artifactsDir: artifactsDir || undefined });
         return;
     }
     throw new Error(`Unknown command: ${cmd}`);

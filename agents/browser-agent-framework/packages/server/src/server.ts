@@ -11,6 +11,10 @@ const db = openDb();
 const app = express();
 app.use(express.json());
 
+// Serve artifacts
+const bafHomeForStatic = process.env.BAF_HOME || new URL('../../../.baf/', import.meta.url).pathname;
+app.use('/artifacts', express.static(path.join(bafHomeForStatic, 'artifacts')));
+
 app.get('/api/runs', (_req, res) => {
   res.json({ runs: listRuns(db) });
 });
@@ -25,8 +29,12 @@ app.post('/api/runs', (req, res) => {
   // Spawn the CLI runner (built JS). We reference workspace path.
   const cliPath = new URL('../../cli/dist/cli.js', import.meta.url).pathname;
 
+  // Artifacts directory: <BAF_HOME>/artifacts/<runId>/...
+  const bafHome = process.env.BAF_HOME || new URL('../../../.baf/', import.meta.url).pathname;
+  const artifactsDir = path.join(bafHome, 'artifacts');
+
   const child = spawn('node', [cliPath, 'run', '--task', path.resolve(taskPath)], {
-    env: { ...process.env },
+    env: { ...process.env, BAF_RUN_ID: id, BAF_ARTIFACTS_DIR: artifactsDir },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
