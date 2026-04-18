@@ -1,0 +1,14 @@
+{
+  "name": "@awesome-mcps/gitlab-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end GitLab agent powered by GitLab MCP tools.",
+  "main": "src/cli.js",
+  "scripts": {
+    "start": "node src/cli.js --help"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

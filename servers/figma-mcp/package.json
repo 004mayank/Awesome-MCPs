@@ -1,0 +1,15 @@
+{
+  "name": "@awesome-mcps/figma-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Figma MCP server (API-token auth, read-mostly).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

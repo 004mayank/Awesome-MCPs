@@ -34,6 +34,10 @@ Start here:
 - **Notion MCP** → docs: [mcps/notion.md](./mcps/notion.md) · server: `servers/notion-mcp` · write-gated (`confirm:true`)
 - **Jira MCP** → docs: [mcps/jira.md](./mcps/jira.md) · server: `servers/jira-mcp` · write-gated (`confirm:true`)
 - **Linear MCP** → docs: [mcps/linear.md](./mcps/linear.md) · server: `servers/linear-mcp` · write-gated (`confirm:true`)
+- **Asana MCP** → docs: [mcps/asana.md](./mcps/asana.md) · server: `servers/asana-mcp` · write-gated (`confirm:true`)
+- **Zendesk MCP** → docs: [mcps/zendesk.md](./mcps/zendesk.md) · server: `servers/zendesk-mcp` · write-gated (`confirm:true`)
+- **GitLab MCP** → docs: [mcps/gitlab.md](./mcps/gitlab.md) · server: `servers/gitlab-mcp` · write-gated (`confirm:true`)
+- **Figma MCP** → docs: [mcps/figma.md](./mcps/figma.md) · server: `servers/figma-mcp` · read-only
 
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`

@@ -13,3 +13,7 @@ One page per MCP entry.
 - [Notion MCP](./notion.md) (server: `servers/notion-mcp`)
 - [Jira MCP](./jira.md) (server: `servers/jira-mcp`)
 - [Linear MCP](./linear.md) (server: `servers/linear-mcp`)
+- [Asana MCP](./asana.md) (server: `servers/asana-mcp`)
+- [Zendesk MCP](./zendesk.md) (server: `servers/zendesk-mcp`)
+- [GitLab MCP](./gitlab.md) (server: `servers/gitlab-mcp`)
+- [Figma MCP](./figma.md) (server: `servers/figma-mcp`)

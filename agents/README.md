@@ -12,3 +12,7 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [Notion Agent](./notion-agent/README.md)
 - [Jira Agent](./jira-agent/README.md)
 - [Linear Agent](./linear-agent/README.md)
+- [Asana Agent](./asana-agent/README.md)
+- [Zendesk Agent](./zendesk-agent/README.md)
+- [GitLab Agent](./gitlab-agent/README.md)
+- [Figma Agent](./figma-agent/README.md)
