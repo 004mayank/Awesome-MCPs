@@ -24,12 +24,32 @@ List sobjects:
 node src/cli.js sobjects
 ```
 
+Describe an sobject:
+```bash
+node src/cli.js describe --sobject Account
+```
+
 Run SOQL query:
 ```bash
 node src/cli.js query --soql "SELECT Id, Name FROM Account LIMIT 5"
 ```
 
+Run SOSL search:
+```bash
+node src/cli.js search --sosl "FIND {acme} IN ALL FIELDS RETURNING Account(Id,Name)"
+```
+
+Get record:
+```bash
+node src/cli.js get --sobject Account --id 001... --fields "Id,Name"
+```
+
 Create record (confirm):
 ```bash
 node src/cli.js create --sobject Account --fields '{"Name":"Acme"}' --confirm
+```
+
+Update record (confirm):
+```bash
+node src/cli.js update --sobject Account --id 001... --fields '{"Name":"Acme 2"}' --confirm
 ```

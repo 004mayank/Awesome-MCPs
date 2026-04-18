@@ -83,6 +83,52 @@ server.tool(
 );
 
 server.tool(
+  "salesforce_describe_sobject",
+  {
+    sobject: { type: "string", description: "SObject API name, e.g. Account, Contact." },
+  },
+  async (input) => {
+    const data = await sfFetch(
+      "GET",
+      `/services/data/${apiVersion()}/sobjects/${encodeURIComponent(input.sobject)}/describe`
+    );
+    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  }
+);
+
+server.tool(
+  "salesforce_get_record",
+  {
+    sobject: { type: "string", description: "SObject API name, e.g. Account." },
+    id: { type: "string", description: "Record Id." },
+    fields: { type: "string", description: "Comma-separated fields list (optional).", optional: true },
+  },
+  async (input) => {
+    const qs = new URLSearchParams();
+    if (input?.fields) qs.set("fields", input.fields);
+    const data = await sfFetch(
+      "GET",
+      `/services/data/${apiVersion()}/sobjects/${encodeURIComponent(input.sobject)}/${encodeURIComponent(input.id)}${
+        qs.toString() ? `?${qs.toString()}` : ""
+      }`
+    );
+    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  }
+);
+
+server.tool(
+  "salesforce_search_sosl",
+  {
+    sosl: { type: "string", description: "SOSL search string." },
+  },
+  async (input) => {
+    const qs = new URLSearchParams({ q: input.sosl });
+    const data = await sfFetch("GET", `/services/data/${apiVersion()}/search?${qs.toString()}`);
+    return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  }
+);
+
+server.tool(
   "salesforce_create_record",
   {
     sobject: { type: "string", description: "SObject API name, e.g. Account, Contact." },
@@ -99,6 +145,30 @@ server.tool(
       input.fields
     );
     return { content: [{ type: "text", text: JSON.stringify({ ok: true, id: data.id, success: data.success }, null, 2) }] };
+  }
+);
+
+server.tool(
+  "salesforce_update_record",
+  {
+    sobject: { type: "string", description: "SObject API name, e.g. Account." },
+    id: { type: "string", description: "Record Id." },
+    fields: { type: "object", description: "Fields to update." },
+    confirm: { type: "boolean", description: "REQUIRED for write actions.", optional: true }
+  },
+  async (input) => {
+    if (!confirmOk(input)) {
+      return { content: [{ type: "text", text: `Write action blocked. Re-run with {"confirm": true} to update the record.` }] };
+    }
+
+    // Salesforce PATCH returns 204 No Content on success.
+    await sfFetch(
+      "PATCH",
+      `/services/data/${apiVersion()}/sobjects/${encodeURIComponent(input.sobject)}/${encodeURIComponent(input.id)}`,
+      input.fields
+    );
+
+    return { content: [{ type: "text", text: JSON.stringify({ ok: true }, null, 2) }] };
   }
 );
 

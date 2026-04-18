@@ -13,7 +13,11 @@ Write actions are **write-gated** (must pass `confirm:true`).
 - `salesforce_limits`
 - `salesforce_sobjects_list`
 - `salesforce_query`
+- `salesforce_search_sosl`
+- `salesforce_describe_sobject`
+- `salesforce_get_record`
 - `salesforce_create_record` (**confirm:true**)
+- `salesforce_update_record` (**confirm:true**)
 
 ## Run
 ```bash
