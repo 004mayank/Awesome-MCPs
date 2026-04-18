@@ -9,10 +9,10 @@
 
 This repository contains **original MCP servers** built to extend AI agents with real capabilities:
 
-* 🔌 Connect to APIs
-* 📂 Access structured/unstructured data
-* ⚙️ Automate workflows
-* 🧠 Enable reasoning with tools
+* Connect to APIs
+* Access structured/unstructured data
+* Automate workflows
+* Enable reasoning with tools
 
 Unlike curated lists, this repo focuses on **actual implementations you can run and use**.
 
