@@ -1,0 +1,62 @@
+import { readFile } from 'node:fs/promises';
+import { z } from 'zod';
+import { chromium } from 'playwright';
+const StepSchema = z.discriminatedUnion('type', [
+    z.object({ type: z.literal('goto'), url: z.string().url() }),
+    z.object({ type: z.literal('click'), selector: z.string() }),
+    z.object({ type: z.literal('type'), selector: z.string(), text: z.string() }),
+    z.object({ type: z.literal('waitFor'), ms: z.number().int().min(0) }),
+    z.object({ type: z.literal('screenshot'), path: z.string() }),
+    z.object({ type: z.literal('extractText'), selector: z.string().optional() }),
+]);
+const TaskSchema = z.object({
+    name: z.string(),
+    steps: z.array(StepSchema).min(1),
+});
+function emit(ev) {
+    process.stdout.write(JSON.stringify(ev) + '\n');
+}
+export async function runTaskFromFile(path) {
+    const raw = await readFile(path, 'utf-8');
+    const task = TaskSchema.parse(JSON.parse(raw));
+    emit({ type: 'task_start', name: task.name });
+    let browser = null;
+    try {
+        browser = await chromium.launch({ headless: true });
+        const ctx = await browser.newContext();
+        const page = await ctx.newPage();
+        for (let i = 0; i < task.steps.length; i++) {
+            const step = task.steps[i];
+            emit({ type: 'step_start', index: i, step });
+            const result = await runStep(page, step);
+            emit({ type: 'step_result', index: i, result });
+        }
+        emit({ type: 'task_done' });
+    }
+    finally {
+        await browser?.close().catch(() => { });
+    }
+}
+async function runStep(page, step) {
+    switch (step.type) {
+        case 'goto':
+            await page.goto(step.url, { waitUntil: 'domcontentloaded' });
+            return { ok: true };
+        case 'click':
+            await page.click(step.selector);
+            return { ok: true };
+        case 'type':
+            await page.fill(step.selector, step.text);
+            return { ok: true };
+        case 'waitFor':
+            await page.waitForTimeout(step.ms);
+            return { ok: true };
+        case 'screenshot':
+            await page.screenshot({ path: step.path, fullPage: true });
+            return { ok: true, path: step.path };
+        case 'extractText': {
+            const txt = step.selector ? await page.textContent(step.selector) : await page.textContent('body');
+            return { ok: true, text: txt ?? '' };
+        }
+    }
+}
