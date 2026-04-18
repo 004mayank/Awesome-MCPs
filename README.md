@@ -40,6 +40,7 @@ Start here:
 - **Figma MCP** → docs: [mcps/figma.md](./mcps/figma.md) · server: `servers/figma-mcp` · read-only
 - **Salesforce MCP** → docs: [mcps/salesforce.md](./mcps/salesforce.md) · server: `servers/salesforce-mcp` · write-gated (`confirm:true`)
 - **Stripe MCP** → docs: [mcps/stripe.md](./mcps/stripe.md) · server: `servers/stripe-mcp` · write-gated (`confirm:true`)
+- **S3 MCP** → docs: [mcps/s3.md](./mcps/s3.md) · server: `servers/s3-mcp` · write-gated (`confirm:true`)
 
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`

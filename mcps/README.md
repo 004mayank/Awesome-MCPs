@@ -19,3 +19,4 @@ One page per MCP entry.
 - [Figma MCP](./figma.md) (server: `servers/figma-mcp`)
 - [Salesforce MCP](./salesforce.md) (server: `servers/salesforce-mcp`)
 - [Stripe MCP](./stripe.md) (server: `servers/stripe-mcp`)
+- [S3 MCP](./s3.md) (server: `servers/s3-mcp`)
