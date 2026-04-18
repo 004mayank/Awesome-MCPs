@@ -1,25 +1,20 @@
 {
-  "name": "@baf/cli",
+  "name": "@baf/skills",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "bin": {
-    "baf": "dist/cli.js"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsx src/cli.ts",
-    "lint": "eslint .",
     "test": "node --test"
   },
   "dependencies": {
-    "@baf/core": "0.1.0",
-    "@baf/skills": "0.1.0",
+    "yaml": "^2.7.0",
     "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.8.0"
   }
 }

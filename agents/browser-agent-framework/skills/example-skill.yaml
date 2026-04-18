@@ -1,0 +1,11 @@
+name: example-skill
+version: 0.1.0
+description: Example skill bundle.
+tasks:
+  - name: example
+    description: Visit example.com and screenshot.
+    steps:
+      - type: goto
+        url: https://example.com
+      - type: screenshot
+        path: example
