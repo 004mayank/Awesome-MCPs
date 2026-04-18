@@ -1,0 +1,14 @@
+{
+  "name": "@awesome-mcps/browser-agent-framework",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm -w @baf/web run dev",
+    "build": "npm -ws run build",
+    "lint": "npm -ws run lint",
+    "test": "npm -ws run test"
+  }
+}
