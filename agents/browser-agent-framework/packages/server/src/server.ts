@@ -3,31 +3,16 @@ import { WebSocketServer } from 'ws';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
+import { openDb, insertRun, insertEvent, listRuns, setRunStatus } from '@baf/db';
 
 const PORT = Number(process.env.BAF_SERVER_PORT || 8788);
-
-type Run = {
-  id: string;
-  taskPath: string;
-  startedAt: number;
-  status: 'running' | 'done' | 'error';
-  lastEvents: string[];
-};
-
-const runs = new Map<string, Run>();
+const db = openDb();
 
 const app = express();
 app.use(express.json());
 
 app.get('/api/runs', (_req, res) => {
-  res.json({
-    runs: Array.from(runs.values()).map((r) => ({
-      id: r.id,
-      taskPath: r.taskPath,
-      startedAt: r.startedAt,
-      status: r.status,
-    })),
-  });
+  res.json({ runs: listRuns(db) });
 });
 
 app.post('/api/runs', (req, res) => {
@@ -35,8 +20,7 @@ app.post('/api/runs', (req, res) => {
   if (!taskPath) return res.status(400).json({ error: 'taskPath is required' });
 
   const id = randomUUID();
-  const run: Run = { id, taskPath, startedAt: Date.now(), status: 'running', lastEvents: [] };
-  runs.set(id, run);
+  insertRun(db, { id, taskPath, startedAt: Date.now(), status: 'running' });
 
   // Spawn the CLI runner (built JS). We reference workspace path.
   const cliPath = new URL('../../cli/dist/cli.js', import.meta.url).pathname;
@@ -47,8 +31,7 @@ app.post('/api/runs', (req, res) => {
   });
 
   const onLine = (line: string) => {
-    run.lastEvents.push(line);
-    if (run.lastEvents.length > 200) run.lastEvents.shift();
+    insertEvent(db, id, line);
     broadcast({ type: 'run_event', id, line });
   };
 
@@ -67,8 +50,9 @@ app.post('/api/runs', (req, res) => {
   });
 
   child.on('exit', (code) => {
-    run.status = code === 0 ? 'done' : 'error';
-    broadcast({ type: 'run_status', id, status: run.status });
+    const status = code === 0 ? 'done' : 'error';
+    setRunStatus(db, id, status);
+    broadcast({ type: 'run_status', id, status });
   });
 
   res.json({ id });
