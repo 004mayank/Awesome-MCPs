@@ -8,9 +8,4 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [Gmail Agent](./gmail-agent/README.md)
 - [Calendar Agent](./calendar-agent/README.md)
 - [Workspace Agent](./workspace-agent/README.md)
-
-## Planned
-- Drive Agent
-- Gmail Agent
-- Calendar Agent
-- Workspace Agent (uses Search MCP)
+- [Slack + Notion + Jira + Linear Agent](./slack-notion-jira-linear-agent.md)

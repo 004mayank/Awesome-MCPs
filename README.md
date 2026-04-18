@@ -30,6 +30,10 @@ Start here:
 - **Google Drive MCP** → docs: [mcps/google-drive.md](./mcps/google-drive.md) · server: `servers/google-drive-mcp` · write-gated (`confirm:true`)
 - **Gmail MCP** → docs: [mcps/gmail.md](./mcps/gmail.md) · server: `servers/gmail-mcp` · write-gated (`confirm:true`)
 - **Google Calendar MCP** → docs: [mcps/google-calendar.md](./mcps/google-calendar.md) · server: `servers/google-calendar-mcp` · write-gated (`confirm:true`)
+- **Slack MCP** → docs: [mcps/slack.md](./mcps/slack.md) · server: `servers/slack-mcp` · write-gated (`confirm:true`)
+- **Notion MCP** → docs: [mcps/notion.md](./mcps/notion.md) · server: `servers/notion-mcp` · write-gated (`confirm:true`)
+- **Jira MCP** → docs: [mcps/jira.md](./mcps/jira.md) · server: `servers/jira-mcp` · write-gated (`confirm:true`)
+- **Linear MCP** → docs: [mcps/linear.md](./mcps/linear.md) · server: `servers/linear-mcp` · write-gated (`confirm:true`)
 
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`
