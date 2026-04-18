@@ -1,0 +1,16 @@
+{
+  "name": "@awesome-mcps/postgres-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Postgres MCP server (pg driver, read-only by default; writes confirm-gated).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "pg": "^8.13.1"
+  }
+}
