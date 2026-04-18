@@ -1,0 +1,14 @@
+{
+  "name": "@awesome-mcps/stripe-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end Stripe agent powered by Stripe MCP tools.",
+  "main": "src/cli.js",
+  "scripts": {
+    "start": "node src/cli.js --help"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

@@ -17,3 +17,4 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [GitLab Agent](./gitlab-agent/README.md)
 - [Figma Agent](./figma-agent/README.md)
 - [Salesforce Agent](./salesforce-agent/README.md)
+- [Stripe Agent](./stripe-agent/README.md)

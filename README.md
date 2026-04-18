@@ -39,6 +39,7 @@ Start here:
 - **GitLab MCP** → docs: [mcps/gitlab.md](./mcps/gitlab.md) · server: `servers/gitlab-mcp` · write-gated (`confirm:true`)
 - **Figma MCP** → docs: [mcps/figma.md](./mcps/figma.md) · server: `servers/figma-mcp` · read-only
 - **Salesforce MCP** → docs: [mcps/salesforce.md](./mcps/salesforce.md) · server: `servers/salesforce-mcp` · write-gated (`confirm:true`)
+- **Stripe MCP** → docs: [mcps/stripe.md](./mcps/stripe.md) · server: `servers/stripe-mcp` · write-gated (`confirm:true`)
 
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`
