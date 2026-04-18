@@ -1,0 +1,8 @@
+{
+  "name": "example-com",
+  "steps": [
+    { "type": "goto", "url": "https://example.com" },
+    { "type": "screenshot", "path": "example-com" },
+    { "type": "extractText" }
+  ]
+}

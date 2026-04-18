@@ -17,6 +17,7 @@ Node + Playwright agent framework with:
 ```bash
 cd agents/browser-agent-framework
 npm i
+npx playwright install
 ```
 
 Run server + UI:
