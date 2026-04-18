@@ -4,6 +4,9 @@ import YAML from 'yaml';
 import { z } from 'zod';
 
 export const StepSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('newPage'), pageId: z.string() }),
+  z.object({ type: z.literal('switchPage'), pageId: z.string() }),
+  z.object({ type: z.literal('closePage'), pageId: z.string() }),
   z.object({ type: z.literal('goto'), url: z.string().url() }),
   z.object({ type: z.literal('click'), selector: z.string() }),
   z.object({ type: z.literal('type'), selector: z.string(), text: z.string() }),

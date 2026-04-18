@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { chromium, type Browser, type Page } from 'playwright';
 
 const StepSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('newPage'), pageId: z.string() }),
+  z.object({ type: z.literal('switchPage'), pageId: z.string() }),
+  z.object({ type: z.literal('closePage'), pageId: z.string() }),
   z.object({ type: z.literal('goto'), url: z.string().url() }),
   z.object({ type: z.literal('click'), selector: z.string() }),
   z.object({ type: z.literal('type'), selector: z.string(), text: z.string() }),
@@ -41,12 +44,17 @@ export async function runTaskFromFile(path: string, opts?: { runId?: string; art
   try {
     browser = await chromium.launch({ headless: true });
     const ctx = await browser.newContext();
-    const page = await ctx.newPage();
+
+    const pages = new Map<string, Page>();
+    const defaultPage = await ctx.newPage();
+    pages.set('default', defaultPage);
+    let currentPageId = 'default';
 
     for (let i = 0; i < task.steps.length; i++) {
       const step = task.steps[i];
       emit({ type: 'step_start', index: i, step });
-      const result = await runStep(page, step, { runId, artifactsDir });
+      const result = await runStep({ ctx, pages, currentPageId }, step, { runId, artifactsDir });
+      if (result?.currentPageId) currentPageId = result.currentPageId;
       emit({ type: 'step_result', index: i, result });
     }
 
@@ -62,11 +70,30 @@ function defaultScreenshotPath(params: { artifactsDir: string; runId: string; na
 }
 
 async function runStep(
-  page: Page,
+  state: { ctx: any; pages: Map<string, Page>; currentPageId: string },
   step: z.infer<typeof StepSchema>,
   ctx: { runId: string; artifactsDir: string | null }
 ) {
+  const page = state.pages.get(state.currentPageId);
+  if (!page) throw new Error(`No current page: ${state.currentPageId}`);
+
   switch (step.type) {
+    case 'newPage': {
+      const p = await state.ctx.newPage();
+      state.pages.set(step.pageId, p);
+      return { ok: true, currentPageId: step.pageId };
+    }
+    case 'switchPage': {
+      if (!state.pages.has(step.pageId)) throw new Error(`Unknown pageId: ${step.pageId}`);
+      return { ok: true, currentPageId: step.pageId };
+    }
+    case 'closePage': {
+      const p = state.pages.get(step.pageId);
+      await p?.close().catch(() => {});
+      state.pages.delete(step.pageId);
+      const nextId = state.currentPageId === step.pageId ? 'default' : state.currentPageId;
+      return { ok: true, currentPageId: nextId };
+    }
     case 'goto':
       await page.goto(step.url, { waitUntil: 'domcontentloaded' });
       return { ok: true };
@@ -80,11 +107,11 @@ async function runStep(
       await page.waitForTimeout(step.ms);
       return { ok: true };
     case 'screenshot': {
-      const p = ctx.artifactsDir
+      const pth = ctx.artifactsDir
         ? defaultScreenshotPath({ artifactsDir: ctx.artifactsDir, runId: ctx.runId, name: step.path?.replace(/[^a-zA-Z0-9-_]/g, '_') })
         : (step.path || './screenshot.png');
-      await page.screenshot({ path: p, fullPage: true });
-      return { ok: true, path: p };
+      await page.screenshot({ path: pth, fullPage: true });
+      return { ok: true, path: pth };
     }
     case 'extractText': {
       const txt = step.selector ? await page.textContent(step.selector) : await page.textContent('body');

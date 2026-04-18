@@ -1,5 +1,32 @@
 import { z } from 'zod';
 export declare const StepSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+    type: z.ZodLiteral<"newPage">;
+    pageId: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "newPage";
+    pageId: string;
+}, {
+    type: "newPage";
+    pageId: string;
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"switchPage">;
+    pageId: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "switchPage";
+    pageId: string;
+}, {
+    type: "switchPage";
+    pageId: string;
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"closePage">;
+    pageId: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "closePage";
+    pageId: string;
+}, {
+    type: "closePage";
+    pageId: string;
+}>, z.ZodObject<{
     type: z.ZodLiteral<"goto">;
     url: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -62,6 +89,33 @@ export declare const TaskSchema: z.ZodObject<{
     name: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
     steps: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+        type: z.ZodLiteral<"newPage">;
+        pageId: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "newPage";
+        pageId: string;
+    }, {
+        type: "newPage";
+        pageId: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"switchPage">;
+        pageId: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "switchPage";
+        pageId: string;
+    }, {
+        type: "switchPage";
+        pageId: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"closePage">;
+        pageId: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "closePage";
+        pageId: string;
+    }, {
+        type: "closePage";
+        pageId: string;
+    }>, z.ZodObject<{
         type: z.ZodLiteral<"goto">;
         url: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -122,6 +176,15 @@ export declare const TaskSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     name: string;
     steps: ({
+        type: "newPage";
+        pageId: string;
+    } | {
+        type: "switchPage";
+        pageId: string;
+    } | {
+        type: "closePage";
+        pageId: string;
+    } | {
         type: "goto";
         url: string;
     } | {
@@ -145,6 +208,15 @@ export declare const TaskSchema: z.ZodObject<{
 }, {
     name: string;
     steps: ({
+        type: "newPage";
+        pageId: string;
+    } | {
+        type: "switchPage";
+        pageId: string;
+    } | {
+        type: "closePage";
+        pageId: string;
+    } | {
         type: "goto";
         url: string;
     } | {
@@ -175,6 +247,33 @@ export declare const SkillSchema: z.ZodObject<{
         name: z.ZodString;
         description: z.ZodOptional<z.ZodString>;
         steps: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+            type: z.ZodLiteral<"newPage">;
+            pageId: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "newPage";
+            pageId: string;
+        }, {
+            type: "newPage";
+            pageId: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"switchPage">;
+            pageId: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "switchPage";
+            pageId: string;
+        }, {
+            type: "switchPage";
+            pageId: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"closePage">;
+            pageId: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "closePage";
+            pageId: string;
+        }, {
+            type: "closePage";
+            pageId: string;
+        }>, z.ZodObject<{
             type: z.ZodLiteral<"goto">;
             url: z.ZodString;
         }, "strip", z.ZodTypeAny, {
@@ -235,6 +334,15 @@ export declare const SkillSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         name: string;
         steps: ({
+            type: "newPage";
+            pageId: string;
+        } | {
+            type: "switchPage";
+            pageId: string;
+        } | {
+            type: "closePage";
+            pageId: string;
+        } | {
             type: "goto";
             url: string;
         } | {
@@ -258,6 +366,15 @@ export declare const SkillSchema: z.ZodObject<{
     }, {
         name: string;
         steps: ({
+            type: "newPage";
+            pageId: string;
+        } | {
+            type: "switchPage";
+            pageId: string;
+        } | {
+            type: "closePage";
+            pageId: string;
+        } | {
             type: "goto";
             url: string;
         } | {
@@ -285,6 +402,15 @@ export declare const SkillSchema: z.ZodObject<{
     tasks: {
         name: string;
         steps: ({
+            type: "newPage";
+            pageId: string;
+        } | {
+            type: "switchPage";
+            pageId: string;
+        } | {
+            type: "closePage";
+            pageId: string;
+        } | {
             type: "goto";
             url: string;
         } | {
@@ -314,6 +440,15 @@ export declare const SkillSchema: z.ZodObject<{
     tasks?: {
         name: string;
         steps: ({
+            type: "newPage";
+            pageId: string;
+        } | {
+            type: "switchPage";
+            pageId: string;
+        } | {
+            type: "closePage";
+            pageId: string;
+        } | {
             type: "goto";
             url: string;
         } | {
