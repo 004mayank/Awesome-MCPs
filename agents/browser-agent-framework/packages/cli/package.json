@@ -15,6 +15,7 @@
   "dependencies": {
     "@baf/core": "0.1.0",
     "@baf/skills": "0.1.0",
+    "playwright": "^1.52.0",
     "zod": "^3.25.0"
   },
   "devDependencies": {

@@ -2,9 +2,10 @@
 import { runTaskFromFile } from './runner.js';
 // (tsc will rewrite extension appropriately in dist)
 import { loadSkill } from '@baf/skills';
+import { planAndRun } from './plan-runner.js';
 
 function usage() {
-  console.log(`baf (Browser Agent Framework)\n\nCommands:\n  baf run --task <path-to-task.json|yaml>\n  baf run-skill --skill <path-to-skill.yaml|json> --task <taskName>\n\nTask format (MVP):\n  {\n    "name": "string",\n    "steps": [\n      {"type":"goto","url":"https://example.com"},\n      {"type":"screenshot","path":"example"}\n    ]\n  }\n`);
+  console.log(`baf (Browser Agent Framework)\n\nCommands:\n  baf run --task <path-to-task.json|yaml>\n  baf run-skill --skill <path-to-skill.yaml|json> --task <taskName>\n  baf plan-run --goal <text> [--startUrl <url>]\n\nTask format (MVP):\n  {\n    "name": "string",\n    "steps": [\n      {"type":"goto","url":"https://example.com"},\n      {"type":"screenshot","path":"example"}\n    ]\n  }\n`);
 }
 
 function getArg(flag: string) {
@@ -45,6 +46,14 @@ async function main() {
     const runId = process.env.BAF_RUN_ID;
     const artifactsDir = process.env.BAF_ARTIFACTS_DIR;
     await runTaskFromFile(tmp, { runId: runId || undefined, artifactsDir: artifactsDir || undefined });
+    return;
+  }
+
+  if (cmd === 'plan-run') {
+    const goal = getArg('--goal');
+    const startUrl = getArg('--startUrl');
+    if (!goal) throw new Error('Missing --goal');
+    await planAndRun({ goal, startUrl: startUrl || undefined });
     return;
   }
 
