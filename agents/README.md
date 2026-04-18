@@ -20,3 +20,4 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [Stripe Agent](./stripe-agent/README.md)
 - [S3 Agent](./s3-agent/README.md)
 - [Postgres Agent](./postgres-agent/README.md)
+- [Confluence Agent](./confluence-agent/README.md)

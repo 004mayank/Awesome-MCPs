@@ -21,3 +21,4 @@ One page per MCP entry.
 - [Stripe MCP](./stripe.md) (server: `servers/stripe-mcp`)
 - [S3 MCP](./s3.md) (server: `servers/s3-mcp`)
 - [Postgres MCP](./postgres.md) (server: `servers/postgres-mcp`)
+- [Confluence MCP](./confluence.md) (server: `servers/confluence-mcp`)

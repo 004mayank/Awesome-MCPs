@@ -42,6 +42,7 @@ Start here:
 - **Stripe MCP** → docs: [mcps/stripe.md](./mcps/stripe.md) · server: `servers/stripe-mcp` · write-gated (`confirm:true`)
 - **S3 MCP** → docs: [mcps/s3.md](./mcps/s3.md) · server: `servers/s3-mcp` · write-gated (`confirm:true`)
 - **Postgres MCP** → docs: [mcps/postgres.md](./mcps/postgres.md) · server: `servers/postgres-mcp` · write-gated (`confirm:true`)
+- **Confluence MCP** → docs: [mcps/confluence.md](./mcps/confluence.md) · server: `servers/confluence-mcp` · write-gated (`confirm:true`)
 
 ### Shared
 - **Google OAuth helper** → `servers/google-auth`
