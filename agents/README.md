@@ -16,3 +16,4 @@ End-to-end runnable agent apps built on top of the MCP servers in this repo.
 - [Zendesk Agent](./zendesk-agent/README.md)
 - [GitLab Agent](./gitlab-agent/README.md)
 - [Figma Agent](./figma-agent/README.md)
+- [Salesforce Agent](./salesforce-agent/README.md)

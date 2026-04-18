@@ -11,6 +11,9 @@ Write actions are **write-gated** (must pass `confirm:true`).
 ## Tools
 - `gitlab_list_projects`
 - `gitlab_list_merge_requests`
+- `gitlab_list_pipelines`
+- `gitlab_list_pipeline_jobs`
+- `gitlab_add_merge_request_note` (**confirm:true**)
 - `gitlab_create_issue` (**confirm:true**)
 
 ## Run

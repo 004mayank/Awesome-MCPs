@@ -17,3 +17,4 @@ One page per MCP entry.
 - [Zendesk MCP](./zendesk.md) (server: `servers/zendesk-mcp`)
 - [GitLab MCP](./gitlab.md) (server: `servers/gitlab-mcp`)
 - [Figma MCP](./figma.md) (server: `servers/figma-mcp`)
+- [Salesforce MCP](./salesforce.md) (server: `servers/salesforce-mcp`)

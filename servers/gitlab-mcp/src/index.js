@@ -102,5 +102,65 @@ server.tool(
   }
 );
 
+server.tool(
+  "gitlab_list_pipelines",
+  {
+    project_id: { type: "number", description: "Project id." },
+    ref: { type: "string", description: "Branch/ref filter (optional).", optional: true },
+    per_page: { type: "number", description: "Per page (default 20).", optional: true },
+    page: { type: "number", description: "Page (default 1).", optional: true }
+  },
+  async (input) => {
+    const qs = new URLSearchParams();
+    if (input?.ref) qs.set("ref", input.ref);
+    qs.set("per_page", String(Number.isFinite(input?.per_page) ? input.per_page : 20));
+    qs.set("page", String(Number.isFinite(input?.page) ? input.page : 1));
+
+    const data = await gitlabFetch(
+      "GET",
+      `/api/v4/projects/${encodeURIComponent(String(input.project_id))}/pipelines?${qs.toString()}`
+    );
+    const simplified = (data || []).map((p) => ({ id: p.id, iid: p.iid, ref: p.ref, status: p.status, web_url: p.web_url, updated_at: p.updated_at }));
+    return { content: [{ type: "text", text: JSON.stringify({ pipelines: simplified }, null, 2) }] };
+  }
+);
+
+server.tool(
+  "gitlab_list_pipeline_jobs",
+  {
+    project_id: { type: "number", description: "Project id." },
+    pipeline_id: { type: "number", description: "Pipeline id." }
+  },
+  async (input) => {
+    const data = await gitlabFetch(
+      "GET",
+      `/api/v4/projects/${encodeURIComponent(String(input.project_id))}/pipelines/${encodeURIComponent(String(input.pipeline_id))}/jobs`
+    );
+    const simplified = (data || []).map((j) => ({ id: j.id, name: j.name, status: j.status, stage: j.stage, web_url: j.web_url }));
+    return { content: [{ type: "text", text: JSON.stringify({ jobs: simplified }, null, 2) }] };
+  }
+);
+
+server.tool(
+  "gitlab_add_merge_request_note",
+  {
+    project_id: { type: "number", description: "Project id." },
+    mr_iid: { type: "number", description: "Merge request IID (not id)." },
+    body: { type: "string", description: "Note/comment body." },
+    confirm: { type: "boolean", description: "REQUIRED for write actions.", optional: true }
+  },
+  async (input) => {
+    if (!confirmOk(input)) {
+      return { content: [{ type: "text", text: `Write action blocked. Re-run with {"confirm": true} to comment on the merge request.` }] };
+    }
+    const data = await gitlabFetch(
+      "POST",
+      `/api/v4/projects/${encodeURIComponent(String(input.project_id))}/merge_requests/${encodeURIComponent(String(input.mr_iid))}/notes`,
+      { body: input.body }
+    );
+    return { content: [{ type: "text", text: JSON.stringify({ ok: true, id: data.id, created_at: data.created_at }, null, 2) }] };
+  }
+);
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
