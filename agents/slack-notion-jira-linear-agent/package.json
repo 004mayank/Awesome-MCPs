@@ -1,0 +1,14 @@
+{
+  "name": "@awesome-mcps/slack-notion-jira-linear-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end agent that orchestrates Slack, Notion, Jira, and Linear MCP tools.",
+  "main": "src/cli.js",
+  "scripts": {
+    "start": "node src/cli.js --help"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

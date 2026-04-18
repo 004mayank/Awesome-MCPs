@@ -1,24 +1,64 @@
-# Slack + Notion + Jira + Linear Agent
+# Slack + Notion + Jira + Linear Agent (end-to-end)
 
-This agent is designed to work with the MCP servers:
+An end-to-end runnable agent app that orchestrates the MCP servers:
 - Slack MCP
 - Notion MCP
 - Jira MCP
 - Linear MCP
 
-## Capabilities
+Write actions are **write-gated** and require `--confirm`.
 
-- Post updates to Slack (write-gated)
-- Search and read Notion pages; create/append content (write-gated)
-- Search Jira issues via JQL; create issues & comment (write-gated)
-- Search Linear issues; create issues (write-gated)
+## Setup
 
-## Operating rules
+```bash
+cd agents/slack-notion-jira-linear-agent
+npm i
+```
 
-- For any write action, ask the user for approval OR require tool input `confirm:true`.
-- Prefer read/search first; keep payloads minimal.
+Env:
+- `SLACK_BOT_TOKEN`
+- `NOTION_TOKEN`
+- `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`
+- `LINEAR_API_KEY`
 
-## Example tasks
+## Commands
 
-- "Find the latest project status page in Notion and post a summary to #eng-updates"
-- "Search Jira for bugs updated this week and create a Linear issue for the top 3"
+### Slack: list channels
+```bash
+node src/cli.js slack:channels
+```
+
+### Slack: search messages
+```bash
+node src/cli.js slack:search --q "from:@alice in:#general onboarding"
+```
+
+### Slack: send message (confirm)
+```bash
+node src/cli.js slack:send --channel C01234567 --text "hello" --confirm
+```
+
+### Notion: search
+```bash
+node src/cli.js notion:search --q "weekly status"
+```
+
+### Jira: list projects
+```bash
+node src/cli.js jira:projects
+```
+
+### Jira: search issues (JQL)
+```bash
+node src/cli.js jira:search --jql "project = ENG ORDER BY updated DESC"
+```
+
+### Linear: list teams
+```bash
+node src/cli.js linear:teams
+```
+
+### Linear: create issue (confirm)
+```bash
+node src/cli.js linear:create --team <teamId> --title "Investigate alert noise" --confirm
+```
