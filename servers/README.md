@@ -147,3 +147,21 @@ export AIRTABLE_PAT="..."  # preferred
 
 npm start
 ```
+
+## Google Sheets MCP (Service Account)
+Path: `servers/google-sheets-mcp`
+
+```bash
+cd servers/google-sheets-mcp
+npm i
+
+# Preferred: path to service account JSON key
+export GOOGLE_SERVICE_ACCOUNT_KEY_PATH="/absolute/path/to/service-account.json"
+
+# Or: raw JSON in an env var
+# export GOOGLE_SERVICE_ACCOUNT_JSON='{"type":"service_account",...}'
+
+npm start
+```
+
+> Note: Service accounts only see files explicitly shared with the service account email.

@@ -1,0 +1,17 @@
+{
+  "name": "@awesome-mcps/google-sheets-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Google Sheets MCP server (service account auth, write-gated).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "googleapis": "^140.0.0"
+  }
+}
+
