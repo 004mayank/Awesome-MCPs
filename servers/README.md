@@ -112,3 +112,14 @@ export CLICKUP_TOKEN="..."
 
 npm start
 ```
+
+## HubSpot MCP
+Path: `servers/hubspot-mcp`
+
+```bash
+cd servers/hubspot-mcp
+npm i
+export HUBSPOT_PRIVATE_APP_TOKEN="..."
+
+npm start
+```

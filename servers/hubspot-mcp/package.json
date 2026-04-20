@@ -1,0 +1,16 @@
+{
+  "name": "@awesome-mcps/hubspot-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HubSpot MCP server (private app token auth, write-gated).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
+
