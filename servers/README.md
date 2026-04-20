@@ -101,3 +101,14 @@ export TRELLO_TOKEN="..."
 
 npm start
 ```
+
+## ClickUp MCP
+Path: `servers/clickup-mcp`
+
+```bash
+cd servers/clickup-mcp
+npm i
+export CLICKUP_TOKEN="..."
+
+npm start
+```
