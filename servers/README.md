@@ -123,3 +123,14 @@ export HUBSPOT_PRIVATE_APP_TOKEN="..."
 
 npm start
 ```
+
+## Intercom MCP
+Path: `servers/intercom-mcp`
+
+```bash
+cd servers/intercom-mcp
+npm i
+export INTERCOM_ACCESS_TOKEN="..."
+
+npm start
+```
