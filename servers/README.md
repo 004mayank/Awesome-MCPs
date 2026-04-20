@@ -134,3 +134,16 @@ export INTERCOM_ACCESS_TOKEN="..."
 
 npm start
 ```
+
+## Airtable MCP
+Path: `servers/airtable-mcp`
+
+```bash
+cd servers/airtable-mcp
+npm i
+export AIRTABLE_PAT="..."  # preferred
+# or legacy:
+# export AIRTABLE_API_KEY="..."
+
+npm start
+```
