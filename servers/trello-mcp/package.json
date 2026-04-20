@@ -1,0 +1,16 @@
+{
+  "name": "@awesome-mcps/trello-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Trello MCP server (API key+token auth, write-gated).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
+

@@ -89,3 +89,15 @@ npm start
 ## Shared
 - Google OAuth helper: `servers/google-auth`
 - Google token cache default: `.secrets/google-token.json` (gitignored)
+
+## Trello MCP
+Path: `servers/trello-mcp`
+
+```bash
+cd servers/trello-mcp
+npm i
+export TRELLO_API_KEY="..."
+export TRELLO_TOKEN="..."
+
+npm start
+```
